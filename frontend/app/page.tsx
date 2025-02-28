@@ -16,6 +16,15 @@ export default function IndexPage() {
     setAiPercent(calculatedPercent.toFixed(2));
   };
 
+  const handlePaste = async () => {
+    try {
+      const text = await navigator.clipboard.readText();
+      setText(text);
+    } catch (err) {
+      console.error('Failed to read clipboard', err);
+    }
+  };
+
   return (
     <div className="flex items-center justify-center flex-1">
       <div className="w-[95%] h-[80%] flex flex-col -mt-8"> {/* Добавлен -mt-8 для поднятия вверх */}
@@ -73,12 +82,23 @@ export default function IndexPage() {
         <div className="h-[100%] flex bg-white dark:bg-gray-800 rounded-b-lg border border-gray-300 rounded-lg shadow-lg">
           {/* Left section - Textarea */}
           <div className="flex flex-col w-[50%] space-y-4 relative border-r border-gray-300 dark:border-gray-600 p-4">
-            <textarea
-              className="w-full h-[90%] p-3 rounded-lg focus:outline-none dark:bg-gray-700 dark:text-white resize-none"
-              placeholder="To analyze paste your text here..."
-              value={text}
-              onChange={handleTextChange}
-            />
+            <div className="relative w-full h-[90%]">
+              <textarea
+                className="w-full h-full p-3 rounded-lg focus:outline-none dark:bg-gray-700 dark:text-white resize-none"
+                placeholder="To analyze paste your text here..."
+                value={text}
+                onChange={handleTextChange}
+                data-paste="true"
+              />
+              {!text && (
+                <button
+                  className="absolute top-12 left-2 px-3 py-1.5 bg-gray-200 text-gray-700 text-sm font-medium rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400 dark:bg-gray-600 dark:text-white dark:hover:bg-gray-500"
+                  onClick={handlePaste}
+                >
+                  Paste text
+                </button>
+              )}
+            </div>
             <button
               className="absolute bottom-4 right-2 px-4 py-2 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
               onClick={checkAiPercent}
